@@ -17,7 +17,7 @@ class Product:
         TODO Верните True если количество продукта больше или равно запрашиваемому
             и False в обратном случае
         """
-        return self.quantity >= quantity
+        return quantity <= self.quantity
 
     def buy(self, quantity):
         """
@@ -25,7 +25,7 @@ class Product:
             Проверьте количество продукта используя метод check_quantity
             Если продуктов не хватает, то выбросите исключение ValueError
         """
-        if self.quantity(quantity):
+        if self.check_quantity(quantity) is True:
             self.quantity -= quantity
         else:
             raise ValueError
@@ -63,11 +63,15 @@ class Cart:
         Если remove_count не передан, то удаляется вся позиция
         Если remove_count больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
-        if product is None or (product in self.products and remove_count > product.quantity):
-            self.products.pop(product)
-        elif product in self.products:
-            self.products[product].quantity -= remove_count
+        # if product is None or (product in self.products and remove_count > product.quantity):
+        #     self.products.pop(product)
+        # elif product in self.products:
+        #     self.products[product].quantity -= remove_count
 
+        if remove_count is None or remove_count >= self.products[product]:
+            self.products.pop(product)
+        else:
+            self.products[product] -= remove_count
 
 
 
@@ -78,8 +82,8 @@ class Cart:
 
     def get_total_price(self) -> float:
         total_price = 0.0
-        for product in self.products:
-            total_price += self.products[product].quantity * product.price
+        for product, quantity in self.products.items():
+            total_price += quantity * product.price
         return total_price
 
     def buy(self):
@@ -88,6 +92,10 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        for product in self.products:
-            product.buy(product)
+        # for product in self.products:
+        #     product.buy(product)
 
+
+        for product, quantity in self.products.items():
+            product.buy(quantity)
+        self.clear()
